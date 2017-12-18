@@ -18,7 +18,7 @@ export class Bookshelf extends Component {
               <Book book={book} onUpdate={onUpdate} />
             </li>
           ))}
-          {!books || books.length === 0 && 
+          {(!books || books.length === 0) && 
             <li>Empty collection</li>
           }
           </ol>
