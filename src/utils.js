@@ -16,10 +16,7 @@ export function sortBooksByShelf (books, BookState) {
 }
 
 export function updateBooksInShelve (books, shelve, shelvesState) {
-  return getBooksByIds(shelvesState[shelve], books).map(book => {
-    book.shelf = shelve;
-    return book;
-  })
+  return getBooksByIds(shelvesState[shelve], books).map(book => ({ ...book, shelf: shelve }))
 }
 
 export function sortBooksByShelvesState (books, bookState, shelvesState) {
