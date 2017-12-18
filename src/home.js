@@ -3,30 +3,28 @@ import { BookState } from './book';
 import { Bookshelf } from './bookshelf';
 import * as BooksAPI from './books-api'
 import { Link } from 'react-router-dom';
+import * as utils from './utils';
 
 export class Home extends Component {
   
   state = {}
 
   componentDidMount () {
-    this.updateData();
+    this.getData();
   }
 
-  updateData = () => {
+  getData = () => {
     return BooksAPI.getAll().then((books) => {
       this.setState({
-        books: {
-          all: books,
-          inReading: this.getBooksByState(BookState.inReading, books),
-          inWishList: this.getBooksByState(BookState.inWishList, books),
-          read: this.getBooksByState(BookState.read, books)
-        }
+        books: utils.sortBooksByShelf(books, BookState)
       })
     })
   }
 
-  getBooksByState (state, books) {
-    return books.filter(book => book.shelf === state)
+  updateData = (shelvesState) => {
+    this.setState({
+      books: utils.sortBooksByShelvesState(this.state.books.all, BookState, shelvesState)
+    })
   }
 
   render () {

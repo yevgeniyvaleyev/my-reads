@@ -7,7 +7,8 @@ import * as BooksAPI from './books-api';
 export const BookState = {
   inReading: 'currentlyReading',
   inWishList: 'wantToRead',
-  read: 'read'
+  read: 'read',
+  none: 'none'
 }
 
 export class Book extends Component {

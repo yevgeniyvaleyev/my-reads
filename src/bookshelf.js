@@ -13,12 +13,12 @@ export class Bookshelf extends Component {
         }
         <div className="bookshelf-books">
           <ol className="books-grid">
-          {books.map((book) => (
+          {books && books.map((book) => (
             <li key={book.id}>
               <Book book={book} onUpdate={onUpdate} />
             </li>
           ))}
-          {books.length === 0 && 
+          {!books || books.length === 0 && 
             <li>Empty collection</li>
           }
           </ol>
