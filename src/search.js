@@ -4,6 +4,7 @@ import { BookState } from './book';
 import { Bookshelf } from './bookshelf';
 import { Link } from 'react-router-dom';
 import debounce from 'lodash/debounce'; 
+import PropTypes from 'prop-types';
 import * as utils from './utils';
 
 export class Search extends Component {
@@ -16,22 +17,24 @@ export class Search extends Component {
     if (!query) {
       return;
     }
+    const { shelvesState } = this.props;
+    const states = BookState;
+
     BooksAPI.search(query)
       .then((data) => {
-        const states = BookState;
         const books = data.error ? [] : data;
-        //
-        // Server does not send any shelve info
         this.setState({
-          books: utils.sortBooksByShelf(books, states)
-        })
+          books: utils.sortBooksByShelvesState(books, states, shelvesState)
+        });
       })
   }, 500)
 
   updateData = (shelvesState) => {
+    const states = BookState;
+    this.props.onShelvesUpdate(shelvesState);
     this.setState({
-      books: utils.sortBooksByShelvesState(this.state.books.all, BookState, shelvesState)
-    })
+      books: utils.sortBooksByShelvesState(this.state.books.all, states, this.props.shelvesState)
+    });
   }
 
   hasItems (collection) {
@@ -40,6 +43,7 @@ export class Search extends Component {
 
   render () {
     const books = this.state.books;
+    const searchResults = this.hasItems(books.none) ? books.none : books.all;
 
     return (
       <div className="search-books">
@@ -75,12 +79,17 @@ export class Search extends Component {
             />
           }
           <Bookshelf 
-            title='Not in any shelve'
-            books={books.all || []}
+            title='Search results'
+            books={searchResults || []}
             onUpdate={this.updateData}
             />
         </div>
       </div>
     )
   }
+}
+
+Search.propTypes = {
+  onShelvesUpdate: PropTypes.func.isRequired,
+  shelvesState: PropTypes.object.isRequired
 }

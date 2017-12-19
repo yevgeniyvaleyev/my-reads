@@ -1,55 +1,35 @@
 import React, { Component } from 'react';
-import { BookState } from './book';
 import { Bookshelf } from './bookshelf';
-import * as BooksAPI from './books-api'
+import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import * as utils from './utils';
 
 export class Home extends Component {
-  
-  state = {}
-
-  componentDidMount () {
-    this.getData();
-  }
-
-  getData = () => {
-    return BooksAPI.getAll().then((books) => {
-      this.setState({
-        books: utils.sortBooksByShelf(books, BookState)
-      })
-    })
-  }
-
-  updateData = (shelvesState) => {
-    this.setState({
-      books: utils.sortBooksByShelvesState(this.state.books.all, BookState, shelvesState)
-    })
-  }
 
   render () {
+    const { booksState } = this.props;
+
     return (
       <div className="list-books">
         <div className="list-books-title">
           <h1>MyReads</h1>
         </div>
         <div className="list-books-content">
-          { this.state.books ? (
+          { booksState ? (
             <div>
               <Bookshelf 
                 title='Currently Reading'
-                onUpdate={this.updateData}
-                books={this.state.books.inReading} 
+                onUpdate={this.props.onShelvesUpdate}
+                books={booksState.inReading || []} 
               />
               <Bookshelf 
                 title='Want to Read'
-                onUpdate={this.updateData}
-                books={this.state.books.inWishList} 
+                onUpdate={this.props.onShelvesUpdate}
+                books={booksState.inWishList || []} 
               />
               <Bookshelf 
                 title='Read'
-                onUpdate={this.updateData}
-                books={this.state.books.read} 
+                onUpdate={this.props.onShelvesUpdate}
+                books={booksState.read || []} 
               />
             </div>
           ) : (
@@ -62,4 +42,10 @@ export class Home extends Component {
     </div>
     )
   }
+}
+
+Home.propTypes = {
+  booksState: PropTypes.object.isRequired,
+  onShelvesUpdate: PropTypes.func.isRequired,
+  shelvesState: PropTypes.object
 }
